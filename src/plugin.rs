@@ -186,6 +186,8 @@ async fn execute(
   for value in values {
     if value.is_string() {
       query = query.bind(value.as_str().unwrap().to_owned())
+    } else if value == JsonValue::Null {
+      query = query.bind(Option::<String>::None);
     } else {
       query = query.bind(value);
     }
@@ -213,6 +215,8 @@ async fn select(
   for value in values {
     if value.is_string() {
       query = query.bind(value.as_str().unwrap().to_owned())
+    } else if value == JsonValue::Null {
+      query = query.bind(Option::<String>::None);
     } else {
       query = query.bind(value);
     }
