@@ -232,8 +232,12 @@ async fn select(
       } else {
         match info.name() {
           "VARCHAR" | "STRING" | "TEXT" | "DATETIME" => {
-            if let Ok(s) = row.try_get(i) {
-              JsonValue::String(s)
+            if let Ok(s) = row.try_get::<Option<String>, usize>(i) {
+              if let Some(ss) = s {
+                JsonValue::String(ss)
+              } else {
+                JsonValue::Null
+              }
             } else {
               JsonValue::Null
             }
