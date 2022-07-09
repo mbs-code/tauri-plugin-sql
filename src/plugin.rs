@@ -247,8 +247,12 @@ async fn select(
             }
           }
           "INT" | "NUMBER" | "INTEGER" | "BIGINT" | "INT8" => {
-            if let Ok(n) = row.try_get::<i64, usize>(i) {
-              JsonValue::Number(n.into())
+            if let Ok(n) = row.try_get::<Option<i64>, usize>(i) {
+              if let Some(nn) = n {
+                JsonValue::Number(nn.into())
+              } else {
+                JsonValue::Null
+              }
             } else {
               JsonValue::Null
             }
