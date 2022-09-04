@@ -228,7 +228,20 @@ async fn select(
     for (i, column) in row.columns().iter().enumerate() {
       let info = column.type_info();
       let v = if info.is_null() {
-        JsonValue::Null
+        // ADD: include 'count', parse number
+        if column.name().contains("count") {
+          if let Ok(n) = row.try_get::<Option<i64>, usize>(i) {
+            if let Some(nn) = n {
+              JsonValue::Number(nn.into())
+            } else {
+              JsonValue::Null
+            }
+          } else {
+            JsonValue::Null
+          }
+        } else {
+          JsonValue::Null
+        }
       } else {
         match info.name() {
           "VARCHAR" | "STRING" | "TEXT" | "DATETIME" => {
